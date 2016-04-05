@@ -1,31 +1,6 @@
-﻿using System;
-
-namespace Game
+﻿namespace Game
 {
-    enum HANDNAME
-    {
-        none = 0,
-        high_card,
-        pair,
-        two_pairs,
-        three_of_a_kind,
-        straight,
-        flush,
-        full_house,
-        four_of_a_kind,
-        straight_flush
-    }
-
-    class Hand
-    {
-        public HANDNAME handName { get; }
-        public Card[] Cards { get; }
-        public Hand(HANDNAME handName, Card[] Cards)
-        {
-            this.handName = handName;
-            this.Cards = Cards;
-        }
-    }
+    using System;
 
     class HandEvaluator
     {
@@ -70,7 +45,7 @@ namespace Game
 
         private Card[] removeDuplicate() // proffesional sort algorithmz²
         {
-            
+
             int numDup = 0;
             int[] dupPos = new int[5] { -1, -1, -1, -1, -1 };
             bool skip = false;
@@ -81,15 +56,15 @@ namespace Game
                     for (int k = 0; k < dupPos.Length - 1; k++)
                         if (j == dupPos[k])
                             skip = true;
-                    
+
                     if (allCards[i].Value == allCards[j].Value && skip == false)
                         dupPos[numDup++] = j;
 
                     skip = false;
                 }
-                
+
             }
-            
+
             Card[] dupFree = new Card[allCards.Length - numDup];
             int numStored = 0;
             skip = false;
@@ -109,13 +84,13 @@ namespace Game
         private Hand highCard()
         {
             Array.Copy(allCards, 2, bestCards, 0, 5);
-            return new Hand(HANDNAME.high_card, bestCards);
+            return new Hand(HandName.high_card, bestCards);
         }
 
         private Hand pairs(int ignoreValue = 0)
         {
             int bestSlot = 0;
-            for (int i = allCards.Length - 1; i >= 1 ; i--)
+            for (int i = allCards.Length - 1; i >= 1; i--)
             {
                 for (int j = i - 1; j >= 0; j--)
                 {
@@ -129,15 +104,17 @@ namespace Game
                 }
             }
 
-            Finish:
+        Finish:
 
             if (bestSlot == 0) return null;
-            else if (bestSlot == 2) {
+            else if (bestSlot == 2)
+            {
                 addKickers(3);
-                return new Hand(HANDNAME.pair, bestCards);
-            } else {
+                return new Hand(HandName.pair, bestCards);
+            }
+            else {
                 addKickers(1);
-                return new Hand(HANDNAME.two_pairs, bestCards);
+                return new Hand(HandName.two_pairs, bestCards);
             }
         }
 
@@ -158,7 +135,7 @@ namespace Game
                                 bestCards[bestSlot++] = allCards[j];
                                 bestCards[bestSlot++] = allCards[k];
                                 addKickers(2);
-                                return new Hand(HANDNAME.three_of_a_kind, bestCards);
+                                return new Hand(HandName.three_of_a_kind, bestCards);
                             }
                         }
                     }
@@ -175,16 +152,8 @@ namespace Game
             else
                 dupFree = removeDuplicate();
 
-             
-            if (dupFree.Length < 5) return null;
 
-            //foreach (Card c in dupFree)
-            //for (int i = 0; i < dupFree.Length - 1; i++)
-            //{
-            //   Console.Write(c.Rank + c.Suit + " ");
-            //}
-            //Console.Write(allCards[0].Rank + allCards[0].Suit + " ");
-            //Console.Write("\n");
+            if (dupFree.Length < 5) return null;
 
             // ACE low straight: A, 2, 3, 4, 5
             if (dupFree[dupFree.Length - 1].Value == 14 &&
@@ -195,19 +164,22 @@ namespace Game
             {
                 Array.Copy(dupFree, 0, bestCards, 1, 4);
                 bestCards[0] = dupFree[dupFree.Length - 1];
-                return new Hand(HANDNAME.straight, bestCards); 
+                return new Hand(HandName.straight, bestCards);
             }
 
+            // Regular straights
             int highestSequence = 0;
             for (int i = dupFree.Length - 1; i >= 4; i--)
             {
                 for (int j = i; j >= i - 4; j--)
                 {
-                    if (dupFree[j - 1].Value == dupFree[j].Value - 1) {
+                    if (dupFree[j - 1].Value == dupFree[j].Value - 1)
+                    {
                         ++highestSequence;
-                        if (highestSequence == 4) {
+                        if (highestSequence == 4)
+                        {
                             Array.Copy(dupFree, j - 1, bestCards, 0, 5);
-                            return new Hand(HANDNAME.straight, bestCards);
+                            return new Hand(HandName.straight, bestCards);
                         }
                     }
                     else {
@@ -227,11 +199,11 @@ namespace Game
                 bestCards[highestSequence++] = allCards[i];
                 for (int j = i - 1; j >= 0; j--)
                 {
-                    if(allCards[i].Suit == allCards[j].Suit)
+                    if (allCards[i].Suit == allCards[j].Suit)
                     {
                         bestCards[highestSequence++] = allCards[j];
                         if (highestSequence == 5)
-                            return new Hand(HANDNAME.flush, bestCards);
+                            return new Hand(HandName.flush, bestCards);
                     }
                 }
                 highestSequence = 0;
@@ -255,7 +227,7 @@ namespace Game
             fhCards[3] = pair.Cards[0];
             fhCards[4] = pair.Cards[1];
 
-            return new Hand(HANDNAME.full_house, fhCards);
+            return new Hand(HandName.full_house, fhCards);
         }
 
         private Hand fourOfAKind() // what matters is that it works
@@ -280,7 +252,7 @@ namespace Game
                                         bestCards[bestSlot++] = allCards[k];
                                         bestCards[bestSlot++] = allCards[l];
                                         addKickers(1);
-                                        return new Hand(HANDNAME.four_of_a_kind, bestCards);
+                                        return new Hand(HandName.four_of_a_kind, bestCards);
                                     }
                                 }
                             }
@@ -290,7 +262,7 @@ namespace Game
             }
             return null;
         }
-        
+
         private Hand straightFlush() // HAHAHA this one sucks
         {
             Card[] backUp = new Card[7];
@@ -312,9 +284,11 @@ namespace Game
                     Array.Copy(sfCards, 0, sfCardsFit, 0, highestSequence);
                     allCards = sfCardsFit;
                     Hand hand = straight(straightFlushTest: true);
-                    if (hand != null) {
-                        return new Hand(HANDNAME.straight_flush, bestCards);
-                    } else {
+                    if (hand != null)
+                    {
+                        return new Hand(HandName.straight_flush, bestCards);
+                    }
+                    else {
                         allCards = backUp;
                         return null;
                     }
