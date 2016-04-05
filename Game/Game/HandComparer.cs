@@ -1,7 +1,5 @@
 ﻿namespace Game
 {
-    using System;
-
     class HandComparer
     {
         public Player[] players;
@@ -112,13 +110,12 @@
                         }
                     }
                 }
-            }
+            }           
             return gatherWinners();
         }
 
-        private Player[] findWinner()
+        private Player[] findWinners()
         {
-            highestScore = 0;
             tiedPlayers = new Player[ties];
             playerScore = new int[tiedPlayers.Length];
 
@@ -135,16 +132,19 @@
                 if (tiedPlayers[0].hand.handName == HandName.high_card) return untieHighCard();
                 else return untie();
             }
-            return null;
         }
 
         public Player[] Evaluate()
         {
+            bestHandValue = 0;
+            ties = 0;
+            highestScore = 0;
+
             for (int i = 0; i < players.Length; i++)
                 players[i].Evaluate(tableCards);
 
             findBestHands();
-            return findWinner();
+            return findWinners();
         }
     }
 }

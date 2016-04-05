@@ -1,5 +1,4 @@
-﻿
-namespace Game
+﻿namespace Game
 {
     enum HandName
     {

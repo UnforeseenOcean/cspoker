@@ -5,7 +5,7 @@
         public Card[] pocket;
         public int Stack { get; set; }
         public Hand hand { get; private set; }
-        public bool Fold { get; }
+        public bool Fold { get; set; }
         public int ID { get; }
         private static int id = 0;
 
