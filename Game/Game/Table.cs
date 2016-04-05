@@ -37,7 +37,6 @@
 
             for (int i = 0; i < 5; i++)
                 tableCards[i] = deck.Draw();
-
         }
 
         public void ShowHands()
@@ -57,8 +56,9 @@
 
         public void ShowTable(int numToShow)
         {
-            for (int i = 0; i < numToShow - 1; i++)
+            for (int i = 0; i < numToShow; i++)
                 Console.Write(tableCards[i].Rank + tableCards[i].Suit + " ");
+            Console.Write("\n");
         }
 
         public void StartRounds_test() // this function is just a test. it will be gone soon
@@ -75,11 +75,24 @@
             {
                 foreach (Player p in Players)
                 {
+                    // -----------------------------------------
+                    int folded = 0;
+                    foreach (Player e in Players)
+                        if (e.Fold == true)
+                            ++folded;
+
+                    if (folded == Players.Length - 1)
+                        goto OneLeft;
+                    // -----------------------------------------
+
                     if (p.Fold == true) continue;
 
+                    // -----------------------------------------
                     Console.Write("P" + p.ID + ": ");
                     foreach (Card c in p.pocket)
                         Console.Write(c.Rank + c.Suit + " ");
+
+                    Console.Write("\nSTACK: " + p.Stack);
 
                     string input = null;
                     while (input != "f" && input != "b")
@@ -88,7 +101,6 @@
                         input = Console.ReadLine();
                     }
 
-                        
                     if (input == "f")
                         p.Fold = true;
                     else
@@ -104,24 +116,33 @@
                         Pot += bet;
                     }
                     Console.Write("\n");
+                    // -----------------------------------------
                 }
 
+                // -----------------------------------------
                 if (roundNumber == 0)
                 {
-                    Console.Write("FLOP: ");
+                    Console.Write("----------------\nFLOP: ");
                     ShowTable(3);
+                    Console.Write("----------------\n\n");
                 } else if (roundNumber == 1)
                 {
-                    Console.Write("TURN: ");
+                    Console.Write("----------------\nTURN: ");
                     ShowTable(4);
+                    Console.Write("----------------\n\n");
                 } else if (roundNumber == 2)
                 {
-                    Console.Write("RIVER: ");
+                    Console.Write("----------------\nRIVER: ");
                     ShowTable(5);
+                    Console.Write("----------------\n\n");
                 }
 
                 ++roundNumber;
+                // -----------------------------------------
+
             }
+
+        OneLeft:
 
             hc.players = Players;
             hc.tableCards = tableCards;
