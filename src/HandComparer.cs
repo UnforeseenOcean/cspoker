@@ -60,7 +60,6 @@
 
         private Player[] untieHighCard()
         {
-
             for (int i = 0; i < ties; i++)
             {
                 for (int j = 0; j < ties; j++)
@@ -73,6 +72,41 @@
                             {
                                 ++playerScore[i];
                                 playerScore[j] -= 100;
+                                break;
+                            }
+                            else if (tiedPlayers[i].hand.Cards[k].Value < tiedPlayers[j].hand.Cards[k].Value)
+                            {
+                                ++playerScore[j];
+                                playerScore[i] -= 100;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return gatherWinners();
+        }
+
+        private Player[] untie()
+        {
+            for (int i = 0; i < ties; i++)
+            {
+                for (int j = 0; j < ties; j++)
+                {
+                    for (int k = 0; k < 5; k++)
+                    {
+                        if (i != j)
+                        {
+                            if (tiedPlayers[i].hand.Cards[k].Value > tiedPlayers[j].hand.Cards[k].Value)
+                            {
+                                ++playerScore[i];
+                                playerScore[j] -= 100;
+                                break;
+                            }
+                            else if (tiedPlayers[i].hand.Cards[k].Value < tiedPlayers[j].hand.Cards[k].Value)
+                            {
+                                ++playerScore[j];
+                                playerScore[i] -= 100;
                                 break;
                             }
                         }
@@ -99,6 +133,7 @@
             }
             else {
                 if (tiedPlayers[0].hand.handName == HandName.high_card) return untieHighCard();
+                else return untie();
             }
             return null;
         }

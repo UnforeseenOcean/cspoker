@@ -88,7 +88,7 @@
                     Console.Write("\n\nTHERE IS A TIE");
                     goto AGAIN;
                 }
-            } while (winners[0].hand.handName != HandName.high_card || winners.Length < 2);
+            } while (winners[0].hand.handName != HandName.straight_flush|| winners.Length < 2);
         }
 
         public void Reset()

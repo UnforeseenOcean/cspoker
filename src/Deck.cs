@@ -7,9 +7,11 @@
         private Card[] Cards;
         private bool[] cardIsAvailable;
         private int remainingCards;
+        private Random rnd;
 
         public Deck()
         {
+            rnd = new Random();
 
             remainingCards = 52;
 
@@ -45,7 +47,6 @@
                 Console.WriteLine("ERROR: No cards left in the deck");
             }
 
-            Random rnd = new Random();
             int n = rnd.Next(0, 52);
             while (cardIsAvailable[n] == false)
             {
