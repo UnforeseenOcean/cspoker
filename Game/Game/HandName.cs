@@ -3,14 +3,14 @@
     enum HandName
     {
         none = 0,
-        high_card,
-        pair,
-        two_pairs,
-        three_of_a_kind,
-        straight,
-        flush,
-        full_house,
-        four_of_a_kind,
-        straight_flush
+        High_Card,
+        Pair,
+        Two_Pairs,
+        Three_of_a_Kind,
+        Straight,
+        Flush,
+        Full_House,
+        Four_of_a_Kind,
+        Straight_Flush
     }
 }

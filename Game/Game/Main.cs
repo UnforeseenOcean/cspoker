@@ -6,12 +6,12 @@
     {
         static void Main(string[] args)
         {
-            Table table = new Table(9, 1, 2);
+            Table table = new Table(2, 1, 2);
             //table.DrawCards();
             //table.ShowHands();
             //table.test();
 
-            table.StartRounds_test();
+            table.playHand();
             Console.ReadKey();
         }
     }

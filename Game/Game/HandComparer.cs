@@ -20,11 +20,11 @@
         private void findBestHands()
         {
             for (int i = 0; i < players.Length; i++)
-                if ((int)players[i].hand.handName > bestHandValue && players[i].Fold == false)
-                    bestHandValue = (int)players[i].hand.handName;
+                if ((int)players[i].hand.Name > bestHandValue && players[i].Fold == false)
+                    bestHandValue = (int)players[i].hand.Name;
 
             for (int i = 0; i < players.Length; i++)
-                if ((int)players[i].hand.handName == bestHandValue && players[i].Fold == false)
+                if ((int)players[i].hand.Name == bestHandValue && players[i].Fold == false)
                     ++ties;
         }
 
@@ -121,7 +121,7 @@
 
             int c = 0;
             for (int i = 0; i < players.Length; i++)
-                if ((int)players[i].hand.handName == bestHandValue && players[i].Fold == false)
+                if ((int)players[i].hand.Name == bestHandValue && players[i].Fold == false)
                     tiedPlayers[c++] = players[i];
 
             if (ties == 1)
@@ -129,7 +129,7 @@
                 return tiedPlayers;
             }
             else {
-                if (tiedPlayers[0].hand.handName == HandName.high_card) return untieHighCard();
+                if (tiedPlayers[0].hand.Name == HandName.High_Card) return untieHighCard();
                 else return untie();
             }
         }

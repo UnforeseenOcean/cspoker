@@ -2,12 +2,12 @@
 {
     class Hand
     {
-        public HandName handName { get; }
+        public HandName Name { get; }
         public Card[] Cards { get; }
 
-        public Hand(HandName handName, Card[] Cards)
+        public Hand(HandName Name, Card[] Cards)
         {
-            this.handName = handName;
+            this.Name = Name;
             this.Cards = Cards;
         }
     }

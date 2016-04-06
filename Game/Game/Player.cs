@@ -8,6 +8,7 @@
         public bool Fold { get; set; }
         public int ID { get; }
         private static int id = 0;
+        public int LastBet { get; set; }
 
         public Player(int Stack)
         {
@@ -15,6 +16,7 @@
             this.Stack = Stack;
             Fold = false;
             ID = id++;
+            LastBet = 0;
         }
 
         public void Evaluate(Card[] tableCards)

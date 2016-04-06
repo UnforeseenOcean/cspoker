@@ -84,7 +84,7 @@
         private Hand highCard()
         {
             Array.Copy(allCards, 2, bestCards, 0, 5);
-            return new Hand(HandName.high_card, bestCards);
+            return new Hand(HandName.High_Card, bestCards);
         }
 
         private Hand pairs(int ignoreValue = 0)
@@ -110,11 +110,11 @@
             else if (bestSlot == 2)
             {
                 addKickers(3);
-                return new Hand(HandName.pair, bestCards);
+                return new Hand(HandName.Pair, bestCards);
             }
             else {
                 addKickers(1);
-                return new Hand(HandName.two_pairs, bestCards);
+                return new Hand(HandName.Two_Pairs, bestCards);
             }
         }
 
@@ -135,7 +135,7 @@
                                 bestCards[bestSlot++] = allCards[j];
                                 bestCards[bestSlot++] = allCards[k];
                                 addKickers(2);
-                                return new Hand(HandName.three_of_a_kind, bestCards);
+                                return new Hand(HandName.Three_of_a_Kind, bestCards);
                             }
                         }
                     }
@@ -164,7 +164,7 @@
             {
                 Array.Copy(dupFree, 0, bestCards, 1, 4);
                 bestCards[0] = dupFree[dupFree.Length - 1];
-                return new Hand(HandName.straight, bestCards);
+                return new Hand(HandName.Straight, bestCards);
             }
 
             // Regular straights
@@ -179,7 +179,7 @@
                         if (highestSequence == 4)
                         {
                             Array.Copy(dupFree, j - 1, bestCards, 0, 5);
-                            return new Hand(HandName.straight, bestCards);
+                            return new Hand(HandName.Straight, bestCards);
                         }
                     }
                     else {
@@ -203,7 +203,7 @@
                     {
                         bestCards[highestSequence++] = allCards[j];
                         if (highestSequence == 5)
-                            return new Hand(HandName.flush, bestCards);
+                            return new Hand(HandName.Flush, bestCards);
                     }
                 }
                 highestSequence = 0;
@@ -227,7 +227,7 @@
             fhCards[3] = pair.Cards[0];
             fhCards[4] = pair.Cards[1];
 
-            return new Hand(HandName.full_house, fhCards);
+            return new Hand(HandName.Full_House, fhCards);
         }
 
         private Hand fourOfAKind() // what matters is that it works
@@ -252,7 +252,7 @@
                                         bestCards[bestSlot++] = allCards[k];
                                         bestCards[bestSlot++] = allCards[l];
                                         addKickers(1);
-                                        return new Hand(HandName.four_of_a_kind, bestCards);
+                                        return new Hand(HandName.Four_of_a_Kind, bestCards);
                                     }
                                 }
                             }
@@ -286,7 +286,7 @@
                     Hand hand = straight(straightFlushTest: true);
                     if (hand != null)
                     {
-                        return new Hand(HandName.straight_flush, bestCards);
+                        return new Hand(HandName.Straight_Flush, bestCards);
                     }
                     else {
                         allCards = backUp;
