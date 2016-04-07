@@ -56,7 +56,7 @@
 
         public void ShowTable(int numToShow, string roundName)
         {
-            Console.Write("-------------------------\n" + roundName + ": ");
+            Console.Write("\n-------------------------\n" + roundName + ": ");
             for (int i = 0; i < numToShow; i++)
                 Console.Write(tableCards[i].Rank + tableCards[i].Suit + " ");
 
@@ -76,6 +76,7 @@
         public void playHand() // this function is just a test. it will be gone soon
         {
             int tempPot = 0;
+            int totalPot = 0;
             int betNumber = 0;
             bool oneLeft = false;
 
@@ -88,22 +89,13 @@
             while (betNumber < 4)
             {
                 int highestBet = 0;
+                int minRaise = 0;
                 bool raise = false;
                 bool finishedRaises = false;
                 
                 RAISE:
                 foreach (Player p in Players)
                 {
-                    Console.WriteLine("\nPOT: " + tempPot);
-                    if (raise == true)
-                    {
-                        if (p.LastBet == highestBet)
-                        {
-                            finishedRaises = true;
-                            break;
-                        }
-                    }
-
                     // -----------------------------------------
                     int folded = 0;
                     foreach (Player e in Players)
@@ -118,6 +110,17 @@
                     }
                     // -----------------------------------------
 
+                    if (raise == true)
+                    {
+                        if (p.LastBet == highestBet)
+                        {
+                            finishedRaises = true;
+                            break;
+                        }
+                    }
+
+                    Console.WriteLine("\nPOT: " + (totalPot + tempPot));
+
                     if (p.Fold == true) continue;
 
                     // -----------------------------------------
@@ -128,49 +131,65 @@
                     Console.Write("\nSTACK: " + p.Stack);
 
                     string input = null;
-                    while (input != "f" && input != "b")
+                    while (input != "check" &&
+                        input != "call" && 
+                        input != "raise" &&
+                        input != "fold")
                     {
-                        Console.Write("\nFold or Bet: ");
+                        Console.Write("\ncheck/call/raise/fold: ");
                         input = Console.ReadLine();
+
+                        if (input == "check" && highestBet != p.LastBet)
+                            input = null;
                     }
 
-                    if (input == "f")
-                        p.Fold = true;
-                    else
+                    if (input == "fold")
                     {
-                        int bet;
+                        p.Fold = true;
+                        continue;
+                    }
 
-                        while (Int32.TryParse(input, out bet) == false || bet < highestBet ||
-                            bet > p.Stack)
+                    int bet = 0;
+                    if (input == "call")
+                    {
+                        bet = highestBet;
+                        Console.WriteLine("Call " + bet);
+                    }
+
+                    if (input == "raise")
+                    {
+                        while (Int32.TryParse(input, out bet) == false ||
+                        bet > p.Stack ||
+                        bet < (highestBet + minRaise))
                         {
                             Console.Write("Raise to: ");
                             input = Console.ReadLine();
                         }
-
-                        if (bet > highestBet) raise = true;
-                        
-                        if (bet > p.Stack) bet = p.Stack;
-
-                        highestBet = bet;
-                        Console.WriteLine("\nHIGHEST BET: " + highestBet);
-
-                        p.LastBet = bet;
-
-                        int tPot = 0;
-                        foreach (Player e in Players)
-                            tPot += e.LastBet;
-
-                        tempPot = tPot;
                     }
-                    Console.Write("\n");
-                    // -----------------------------------------
+                    
+                    if (bet > highestBet)
+                    {
+                        raise = true;
+                        minRaise = bet - highestBet;
+                    }
+
+                    if (bet > p.Stack) bet = p.Stack;
+
+                    highestBet = bet;
+
+                    p.LastBet = bet;
+
+                    int tPot = 0;
+                    foreach (Player e in Players)
+                        tPot += e.LastBet;
+
+                    tempPot = tPot;
                 }
 
                 if (raise == true && finishedRaises == false) goto RAISE;
                 
                 processBets();
 
-                // -----------------------------------------
                 if (betNumber == 0)
                     ShowTable(3, "FLOP");
                 else if (betNumber == 1)
@@ -179,8 +198,9 @@
                     ShowTable(5, "RIVER");
 
                 ++betNumber;
-                // -----------------------------------------
-
+                totalPot += tempPot;
+                tempPot = 0;
+                minRaise = 0;
             }
 
         ONELEFT:
