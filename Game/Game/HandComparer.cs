@@ -20,11 +20,11 @@
         private void findBestHands()
         {
             for (int i = 0; i < players.Length; i++)
-                if ((int)players[i].hand.Name > bestHandValue && players[i].Fold == false)
-                    bestHandValue = (int)players[i].hand.Name;
+                if ((int)players[i].Hand.Name > bestHandValue && players[i].Fold == false)
+                    bestHandValue = (int)players[i].Hand.Name;
 
             for (int i = 0; i < players.Length; i++)
-                if ((int)players[i].hand.Name == bestHandValue && players[i].Fold == false)
+                if ((int)players[i].Hand.Name == bestHandValue && players[i].Fold == false)
                     ++ties;
         }
 
@@ -66,13 +66,13 @@
                     {
                         if (i != j)
                         {
-                            if (tiedPlayers[i].hand.Cards[k].Value > tiedPlayers[j].hand.Cards[k].Value)
+                            if (tiedPlayers[i].Hand.Cards[k].Value > tiedPlayers[j].Hand.Cards[k].Value)
                             {
                                 ++playerScore[i];
                                 playerScore[j] -= 100;
                                 break;
                             }
-                            else if (tiedPlayers[i].hand.Cards[k].Value < tiedPlayers[j].hand.Cards[k].Value)
+                            else if (tiedPlayers[i].Hand.Cards[k].Value < tiedPlayers[j].Hand.Cards[k].Value)
                             {
                                 ++playerScore[j];
                                 playerScore[i] -= 100;
@@ -95,13 +95,13 @@
                     {
                         if (i != j)
                         {
-                            if (tiedPlayers[i].hand.Cards[k].Value > tiedPlayers[j].hand.Cards[k].Value)
+                            if (tiedPlayers[i].Hand.Cards[k].Value > tiedPlayers[j].Hand.Cards[k].Value)
                             {
                                 ++playerScore[i];
                                 playerScore[j] -= 100;
                                 break;
                             }
-                            else if (tiedPlayers[i].hand.Cards[k].Value < tiedPlayers[j].hand.Cards[k].Value)
+                            else if (tiedPlayers[i].Hand.Cards[k].Value < tiedPlayers[j].Hand.Cards[k].Value)
                             {
                                 ++playerScore[j];
                                 playerScore[i] -= 100;
@@ -121,7 +121,7 @@
 
             int c = 0;
             for (int i = 0; i < players.Length; i++)
-                if ((int)players[i].hand.Name == bestHandValue && players[i].Fold == false)
+                if ((int)players[i].Hand.Name == bestHandValue && players[i].Fold == false)
                     tiedPlayers[c++] = players[i];
 
             if (ties == 1)
@@ -129,7 +129,7 @@
                 return tiedPlayers;
             }
             else {
-                if (tiedPlayers[0].hand.Name == HandName.High_Card) return untieHighCard();
+                if (tiedPlayers[0].Hand.Name == HandName.High_Card) return untieHighCard();
                 else return untie();
             }
         }

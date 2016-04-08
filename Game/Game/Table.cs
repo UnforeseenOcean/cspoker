@@ -73,27 +73,52 @@
             }
         }
 
+        public void payBlinds()
+        {
+            if (Players[0].Stack >= smallBlind)
+            {
+                Players[0].Stack -= smallBlind;
+                Pot += smallBlind;
+            }
+            else
+                Players[0].Fold = true;
+
+            if (Players[1].Stack >= bigBlind)
+            {
+                Players[1].Stack -= bigBlind;
+                Pot += bigBlind;
+            }
+            else
+                Players[1].Fold = true;
+        }
+
         public void playHand() // this function is just a test. it will be gone soon
         {
             int tempPot = 0;
+            //int totalPot = smallBlind + bigBlind;
             int totalPot = 0;
             int betNumber = 0;
+            //int highestBet = bigBlind;
+            int highestBet = 0;
             bool oneLeft = false;
 
             HandComparer hc = new HandComparer();
             Player[] winners = null;
 
+            foreach (Player p in Players) // this will help with the AllIn calculation. will it help, though? dunno. I'll check tomorrow.
+                p.StartingStack = p.Stack;
+
             Reset();
             DrawCards();
 
+            //payBlinds();
             while (betNumber < 4)
             {
-                int highestBet = 0;
                 int minRaise = 0;
                 bool raise = false;
                 bool finishedRaises = false;
-                
-                RAISE:
+
+            RAISE:
                 foreach (Player p in Players)
                 {
                     // -----------------------------------------
@@ -201,6 +226,7 @@
                 totalPot += tempPot;
                 tempPot = 0;
                 minRaise = 0;
+                highestBet = 0;
             }
 
         ONELEFT:
@@ -220,9 +246,9 @@
                 Console.Write("\nPlayer " + p.ID + " " + winsOrTies + " main pot: " + prize + " chips.\n");
                 if (oneLeft == false)
                 {
-                    Console.Write("With hand: " + p.hand.Name.ToString().Replace("_", " ") + " (");
+                    Console.Write("With hand: " + p.Hand.Name.ToString().Replace("_", " ") + " (");
 
-                    foreach (Card c in p.hand.Cards)
+                    foreach (Card c in p.Hand.Cards)
                         Console.Write(c.Rank + c.Suit + " ");
 
                     Console.Write(")\n");
@@ -251,9 +277,9 @@
                     foreach (Player p in winners)
                     {
                         Console.Write("\n\nWINNER IS: " + p.ID);
-                        Console.Write("\n\nWITH HAND: " + p.hand.Name.ToString().Replace("_", " "));
+                        Console.Write("\n\nWITH HAND: " + p.Hand.Name.ToString().Replace("_", " "));
                         Console.Write("\n\nCARDS: ");
-                        foreach (Card card in p.hand.Cards)
+                        foreach (Card card in p.Hand.Cards)
                         {
                             Console.Write(card.Rank + card.Suit + " ");
                         }
@@ -263,7 +289,7 @@
                     Console.Write("\n\nTHERE IS A TIE");
                     goto AGAIN;
                 }
-            } while (winners[0].hand.Name != HandName.Straight_Flush || winners.Length < 2);
+            } while (winners[0].Hand.Name != HandName.Straight_Flush || winners.Length < 2);
         }
 
         public void Reset()

@@ -6,7 +6,7 @@
     {
         static void Main(string[] args)
         {
-            Table table = new Table(2, 1, 2);
+            Table table = new Table(2, 2, 1);
             //table.DrawCards();
             //table.ShowHands();
             //table.test();
