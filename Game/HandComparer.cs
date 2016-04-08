@@ -10,11 +10,13 @@
         private int[] playerScore;
         private int highestScore;
 
-        public HandComparer()
+        public HandComparer(Player[] Players, Card[] TableCards)
         {
+            this.players = Players;
+            this.tableCards = TableCards;
+            highestScore = 0;
             bestHandValue = 0;
             ties = 0;
-            highestScore = 0;
         }
 
         private void findBestHands()

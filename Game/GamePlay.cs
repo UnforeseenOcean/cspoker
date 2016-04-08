@@ -20,6 +20,25 @@
             Console.Write("\n-------------------------\n\n");
         }
 
+        private void processBlinds() // not finished. only use when finished. it is broken.
+        {
+            if (table.Players[0].Stack >= table.smallBlind)
+            {
+                table.Players[0].LastBet = table.smallBlind;
+                table.Pot += table.smallBlind;
+            }
+            else
+                table.Players[0].Fold = true;
+
+            if (table.Players[1].Stack >= table.bigBlind)
+            {
+                table.Players[1].LastBet = table.bigBlind;
+                table.Pot += table.bigBlind;
+            }
+            else
+                table.Players[1].Fold = true;
+        }
+
         private void processBets()
         {
             foreach (Player p in table.Players)
@@ -30,45 +49,53 @@
             }
         }
 
-        private void payBlinds() // not finished. only use when finished. it is broken.
+        private void processWinners(bool oneLeft)
         {
-            if (table.Players[0].Stack >= table.smallBlind)
-            {
-                table.Players[0].Stack -= table.smallBlind;
-                table.Pot += table.smallBlind;
-            }
-            else
-                table.Players[0].Fold = true;
+            HandComparer hc = new HandComparer(table.Players, table.tableCards);
+            Player[] winners = hc.Evaluate();
 
-            if (table.Players[1].Stack >= table.bigBlind)
+            string winsOrTies = "wins";
+            if (winners.Length > 1)
+                winsOrTies = "ties";
+
+            int prize = table.Pot / winners.Length;
+            foreach (Player p in winners)
             {
-                table.Players[1].Stack -= table.bigBlind;
-                table.Pot += table.bigBlind;
+                p.Stack += prize;
+                Console.Write("\nPlayer " + p.ID + " " + winsOrTies + " main pot: " + prize + " chips.\n");
+                if (oneLeft == false)
+                {
+                    Console.Write("With hand: " + p.Hand.Name.ToString().Replace("_", " ") + " (");
+
+                    foreach (Card c in p.Hand.Cards)
+                        Console.Write(c.Rank + c.Suit + " ");
+
+                    Console.Write(")\n");
+                }
             }
-            else
-                table.Players[1].Fold = true;
         }
 
         public void start()
         {
             int tempPot = 0;
-            //int totalPot = smallBlind + bigBlind;
-            int totalPot = 0;
+            int totalPot = table.smallBlind + table.bigBlind;
+            //int totalPot = 0;
             int betNumber = 0;
-            //int highestBet = bigBlind;
-            int highestBet = 0;
+            int highestBet = table.bigBlind;
+            //int highestBet = 0;
             bool oneLeft = false;
-
-            HandComparer hc = new HandComparer();
-            Player[] winners = null;
-
-            foreach (Player p in table.Players) // this will help with the AllIn calculation. will it help, though? dunno. I'll check tomorrow.
-                p.StartingStack = p.Stack;
 
             table.Reset();
             table.DrawCards();
 
-            //payBlinds();
+            processBlinds();
+
+            foreach (Player p in table.Players)
+            {
+                p.Fold = false;
+                p.StartingStack = p.Stack; // this will help with the AllIn calculation. will it help, though? dunno. I'll check tomorrow.
+            }
+            
             while (betNumber < 4)
             {
                 int minRaise = 0;
@@ -79,6 +106,7 @@
                 foreach (Player p in table.Players)
                 {
                     // -----------------------------------------
+
                     int folded = 0;
                     foreach (Player e in table.Players)
                         if (e.Fold == true)
@@ -90,6 +118,7 @@
                         oneLeft = true;
                         goto ONELEFT;
                     }
+
                     // -----------------------------------------
 
                     if (raise == true)
@@ -101,16 +130,21 @@
                         }
                     }
 
-                    Console.WriteLine("\nPOT: " + (totalPot + tempPot));
+                    // -----------------------------------------
 
                     if (p.Fold == true) continue;
 
                     // -----------------------------------------
+
+                    Console.WriteLine("\nPOT: " + (totalPot + tempPot));
                     Console.Write("P" + p.ID + ": ");
+
                     foreach (Card c in p.pocket)
                         Console.Write(c.Rank + c.Suit + " ");
 
                     Console.Write("\nSTACK: " + p.Stack);
+
+                    // -----------------------------------------
 
                     string input = null;
                     while (input != "check" &&
@@ -122,6 +156,9 @@
                         input = Console.ReadLine();
 
                         if (input == "check" && highestBet != p.LastBet)
+                            input = null;
+
+                        if (input == "call" && highestBet == p.LastBet)
                             input = null;
                     }
 
@@ -141,8 +178,8 @@
                     if (input == "raise")
                     {
                         while (Int32.TryParse(input, out bet) == false ||
-                        bet > p.Stack ||
-                        bet < (highestBet + minRaise))
+                            bet > p.Stack ||
+                            bet < (highestBet + minRaise))
                         {
                             Console.Write("Raise to: ");
                             input = Console.ReadLine();
@@ -170,6 +207,8 @@
 
                 if (raise == true && finishedRaises == false) goto RAISE;
 
+                // -----------------------------------------
+
                 processBets();
 
                 if (betNumber == 0)
@@ -187,30 +226,7 @@
             }
 
         ONELEFT:
-
-            hc.players = table.Players;
-            hc.tableCards = table.tableCards;
-            winners = hc.Evaluate();
-
-            string winsOrTies = "wins";
-            if (winners.Length > 1)
-                winsOrTies = "ties";
-
-            int prize = table.Pot / winners.Length;
-            foreach (Player p in winners)
-            {
-                p.Stack += prize;
-                Console.Write("\nPlayer " + p.ID + " " + winsOrTies + " main pot: " + prize + " chips.\n");
-                if (oneLeft == false)
-                {
-                    Console.Write("With hand: " + p.Hand.Name.ToString().Replace("_", " ") + " (");
-
-                    foreach (Card c in p.Hand.Cards)
-                        Console.Write(c.Rank + c.Suit + " ");
-
-                    Console.Write(")\n");
-                }
-            }
+            processWinners(oneLeft);
         }
     }
 }

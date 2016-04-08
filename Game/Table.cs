@@ -56,8 +56,12 @@
 
         public void startGame()
         {
-            Gameplay round = new Gameplay(this);
-            round.start();
+            while(true)
+            {
+                Gameplay round = new Gameplay(this);
+                round.start();
+            }
+            
         }
 
         public void Reset()
@@ -69,7 +73,7 @@
         // finds a specific hand for testing.
         public void test() 
         {
-            HandComparer hc = new HandComparer();
+            HandComparer hc = new HandComparer(Players, tableCards);
             Player[] winners = null;
             do
             {
@@ -78,8 +82,6 @@
                 DrawCards();
                 Console.Write("\n\n");
                 ShowHands();
-                hc.players = Players;
-                hc.tableCards = tableCards;
 
                 winners = hc.Evaluate();
 
