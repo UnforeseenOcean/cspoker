@@ -6,8 +6,8 @@
         public int Stack { get; set; }
         public Hand Hand { get; private set; }
         public bool Fold { get; set; }
-        public bool AllIn { get; set; }
-        public int StartingStack { get; set; }
+        public bool AllIn { get; set; } // 
+        public int StartingStack { get; set; } //
         public int LastBet { get; set; }
         public int ID { get; }
         private static int id = 0;

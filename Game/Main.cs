@@ -11,7 +11,8 @@
             //table.ShowHands();
             //table.test();
 
-            table.playHand();
+            //table.playHand();
+            table.startGame();
             Console.ReadKey();
         }
     }
