@@ -58,35 +58,6 @@
             return winners;
         }
 
-        private Player[] untieHighCard()
-        {
-            for (int i = 0; i < ties; i++)
-            {
-                for (int j = 0; j < ties; j++)
-                {
-                    for (int k = 4; k >= 0; k--)
-                    {
-                        if (i != j)
-                        {
-                            if (tiedPlayers[i].Hand.Cards[k].Value > tiedPlayers[j].Hand.Cards[k].Value)
-                            {
-                                ++playerScore[i];
-                                playerScore[j] -= 100;
-                                break;
-                            }
-                            else if (tiedPlayers[i].Hand.Cards[k].Value < tiedPlayers[j].Hand.Cards[k].Value)
-                            {
-                                ++playerScore[j];
-                                playerScore[i] -= 100;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            return gatherWinners();
-        }
-
         private Player[] untie()
         {
             for (int i = 0; i < ties; i++)
@@ -127,13 +98,9 @@
                     tiedPlayers[c++] = players[i];
 
             if (ties == 1)
-            {
                 return tiedPlayers;
-            }
-            else {
-                if (tiedPlayers[0].Hand.Name == HandName.High_Card) return untieHighCard();
-                else return untie();
-            }
+            else
+                return untie();
         }
 
         public Player[] Evaluate()

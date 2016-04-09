@@ -102,7 +102,7 @@
                     Console.Write("\n\nTHERE IS A TIE");
                     goto AGAIN;
                 }
-            } while (winners[0].Hand.Name != HandName.Straight_Flush || winners.Length < 2);
+            } while (winners[0].Hand.Name != HandName.Flush);
         }
     }
 }

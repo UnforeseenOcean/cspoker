@@ -20,7 +20,7 @@
             {
                 for (int j = 0; j < (cards.Length - i) - 1; j++)
                 {
-                    if (cards[j].Value > cards[j + 1].Value)
+                    if (cards[j].Value < cards[j + 1].Value)
                     {
                         hold = cards[j];
                         cards[j] = cards[j + 1];
@@ -35,7 +35,7 @@
             int bestSlot = 5 - numKickers;
             int ignoredCards = bestSlot;
             bool notAvailable = false;
-            for (int i = allCards.Length - 1; i >= 0; i--)
+            for (int i = 0; i < allCards.Length; i++)
             {
                 for (int j = 0; j < ignoredCards; j++) if (bestCards[j].Value == allCards[i].Value) notAvailable = true;
                 if (bestSlot < 5 && notAvailable == false) bestCards[bestSlot++] = allCards[i];
@@ -83,16 +83,16 @@
 
         private Hand highCard()
         {
-            Array.Copy(allCards, 2, bestCards, 0, 5);
+            Array.Copy(allCards, 0, bestCards, 0, 5);
             return new Hand(HandName.High_Card, bestCards);
         }
 
         private Hand pairs(int ignoreValue = 0)
         {
             int bestSlot = 0;
-            for (int i = allCards.Length - 1; i >= 1; i--)
+            for (int i = 0; i < allCards.Length; i++)
             {
-                for (int j = i - 1; j >= 0; j--)
+                for (int j = 0; j < i; j++)
                 {
                     if (allCards[i].Value == allCards[j].Value &&
                         (allCards[i].Value != ignoreValue && allCards[j].Value != ignoreValue))
@@ -121,13 +121,13 @@
         private Hand threeOfAKind()
         {
             int bestSlot = 0;
-            for (int i = allCards.Length - 1; i >= 1; i--)
+            for (int i = 0; i < allCards.Length - 2; i++)
             {
-                for (int j = i - 1; j >= 0; j--)
+                for (int j = i + 1; j < allCards.Length - 1; j++)
                 {
                     if (allCards[i].Value == allCards[j].Value)
                     {
-                        for (int k = j - 1; k >= 0; k--)
+                        for (int k = j + 1; k < allCards.Length; k++)
                         {
                             if (allCards[i].Value == allCards[k].Value)
                             {
@@ -156,36 +156,33 @@
             if (dupFree.Length < 5) return null;
 
             // ACE low straight: A, 2, 3, 4, 5
-            if (dupFree[dupFree.Length - 1].Value == 14 &&
-                dupFree[0].Value == 2 &&
-                dupFree[1].Value == 3 &&
-                dupFree[2].Value == 4 &&
-                dupFree[3].Value == 5)
+            if (dupFree[0].Value == 14 &&
+                dupFree[dupFree.Length - 1].Value == 2 &&
+                dupFree[dupFree.Length - 2].Value == 3 &&
+                dupFree[dupFree.Length - 3].Value == 4 &&
+                dupFree[dupFree.Length - 4].Value == 5)
             {
-                Array.Copy(dupFree, 0, bestCards, 1, 4);
-                bestCards[0] = dupFree[dupFree.Length - 1];
+                Array.Copy(dupFree, dupFree.Length - 4, bestCards, 0, 4);
+                bestCards[4] = dupFree[0];
                 return new Hand(HandName.Straight, bestCards);
             }
-
+           
             // Regular straights
             int highestSequence = 0;
-            for (int i = dupFree.Length - 1; i >= 4; i--)
+            for (int j = 0; j < dupFree.Length - 1; j++)
             {
-                for (int j = i; j >= i - 4; j--)
+                if ((dupFree[j].Value - 1) == dupFree[j + 1].Value)
                 {
-                    if (dupFree[j - 1].Value == dupFree[j].Value - 1)
+                    ++highestSequence;
+                    if (highestSequence == 4)
                     {
-                        ++highestSequence;
-                        if (highestSequence == 4)
-                        {
-                            Array.Copy(dupFree, j - 1, bestCards, 0, 5);
-                            return new Hand(HandName.Straight, bestCards);
-                        }
+                        Array.Copy(dupFree, j - 3, bestCards, 0, 5);
+                        return new Hand(HandName.Straight, bestCards);
                     }
-                    else {
-                        highestSequence = 0;
-                        break;
-                    }
+                }
+                else {
+                    highestSequence = 0;
+                    break;
                 }
             }
             return null;
@@ -194,10 +191,10 @@
         private Hand flush()
         {
             int highestSequence = 0;
-            for (int i = allCards.Length - 1; i >= 4; i--)
+            for (int i = 0; i < allCards.Length - 4; i++)
             {
                 bestCards[highestSequence++] = allCards[i];
-                for (int j = i - 1; j >= 0; j--)
+                for (int j = i + 1; j < allCards.Length; j++)
                 {
                     if (allCards[i].Suit == allCards[j].Suit)
                     {
@@ -233,17 +230,17 @@
         private Hand fourOfAKind() // what matters is that it works
         {
             int bestSlot = 0;
-            for (int i = allCards.Length - 1; i >= 1; i--)
+            for (int i = 0; i < allCards.Length; i++)
             {
-                for (int j = i - 1; j >= 0; j--)
+                for (int j = i + 1; j < allCards.Length; j++)
                 {
                     if (allCards[i].Value == allCards[j].Value)
                     {
-                        for (int k = j - 1; k >= 0; k--)
+                        for (int k = j + 1; k < allCards.Length; k++)
                         {
                             if (allCards[i].Value == allCards[k].Value)
                             {
-                                for (int l = k - 1; l >= 0; l--)
+                                for (int l = k + 1; l < allCards.Length; l++)
                                 {
                                     if (allCards[k].Value == allCards[l].Value)
                                     {
