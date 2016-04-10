@@ -73,11 +73,14 @@
         // finds a specific hand for testing.
         public void test() 
         {
+            int count = 0;
+
             HandComparer hc = new HandComparer(Players, tableCards);
             Player[] winners = null;
             do
             {
             AGAIN:
+                ++count;
                 Reset();
                 DrawCards();
                 Console.Write("\n\n");
@@ -102,7 +105,10 @@
                     Console.Write("\n\nTHERE IS A TIE");
                     goto AGAIN;
                 }
-            } while (winners[0].Hand.Name != HandName.Flush);
+
+                Console.WriteLine("\nCOUNT: " + count);
+
+            } while (winners[0].Hand.Name != HandName.Straight_Flush);
         }
     }
 }

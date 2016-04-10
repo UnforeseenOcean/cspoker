@@ -49,7 +49,7 @@
             }
         }
 
-        private void processWinners(bool oneLeft)
+        private void processWinners(bool oneLeft = false)
         {
             HandComparer hc = new HandComparer(table.Players, table.tableCards);
             Player[] winners = hc.Evaluate();
@@ -75,6 +75,19 @@
             }
         }
 
+        private bool oneLeft()
+        {
+            int folded = 0;
+            foreach (Player e in table.Players)
+                if (e.Fold == true)
+                    ++folded;
+
+            if (folded == table.Players.Length - 1)
+                return true;
+            else
+                return false;
+        }
+
         public void start()
         {
             int tempPot = 0;
@@ -83,7 +96,6 @@
             int betNumber = 0;
             int highestBet = table.bigBlind;
             //int highestBet = 0;
-            bool oneLeft = false;
 
             table.Reset();
             table.DrawCards();
@@ -105,18 +117,11 @@
             RAISE:
                 foreach (Player p in table.Players)
                 {
-                    // -----------------------------------------
-
-                    int folded = 0;
-                    foreach (Player e in table.Players)
-                        if (e.Fold == true)
-                            ++folded;
-
-                    if (folded == table.Players.Length - 1)
+                    if (oneLeft() == true)
                     {
                         processBets();
-                        oneLeft = true;
-                        goto ONELEFT;
+                        processWinners(oneLeft: true);
+                        return;
                     }
 
                     // -----------------------------------------
@@ -172,7 +177,7 @@
                     if (input == "call")
                     {
                         bet = highestBet;
-                        Console.WriteLine("Call " + bet);
+                        Console.WriteLine("Call: " + bet);
                     }
 
                     if (input == "raise")
@@ -225,8 +230,7 @@
                 highestBet = 0;
             }
 
-        ONELEFT:
-            processWinners(oneLeft);
+            processWinners();
         }
     }
 }

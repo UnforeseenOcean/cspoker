@@ -13,7 +13,7 @@
             bestCards = new Card[5];
         }
 
-        private void sort(Card[] cards) // proffesional sort algorithmz
+        private void sort(Card[] cards)
         {
             Card hold = null;
             for (int i = 0; i < cards.Length - 1; i++)
@@ -43,9 +43,8 @@
             }
         }
 
-        private Card[] removeDuplicate() // proffesional sort algorithmz²
+        private Card[] removeDuplicate()
         {
-
             int numDup = 0;
             int[] dupPos = new int[5] { -1, -1, -1, -1, -1 };
             bool skip = false;
@@ -182,7 +181,6 @@
                 }
                 else {
                     highestSequence = 0;
-                    break;
                 }
             }
             return null;

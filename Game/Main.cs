@@ -9,10 +9,10 @@
             Table table = new Table(2, 2, 1);
             //table.DrawCards();
             //table.ShowHands();
-            table.test();
+            //table.test();
 
             //table.playHand();
-            //table.startGame();
+            table.startGame();
             Console.ReadKey();
         }
     }
